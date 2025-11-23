@@ -1,28 +1,25 @@
 import { DataSource } from "typeorm";
 import * as dotenv from "dotenv";
+import * as path from "path";
 
 dotenv.config({ path: ".env" });
 
-export const dataSourceOptions = {
-  type: process.env.DATABASE_ENGINE as any,
-  host: process.env.DATABASE_HOST,
-  port: parseInt(process.env.DATABASE_PORT || "5432"),
-  username: process.env.DATABASE_USER,
-  password: process.env.DATABASE_PASSWORD,
-  database: process.env.DATABASE_NAME,
+const dataSource = new DataSource({
+  type: "better-sqlite3",
 
-  entities: ["src/**/*.entity{.ts,.js}"],
+  database:
+	process.env.SQLITE_DB ||
+	path.join(__dirname, "..", "..", "..", "database", "data", "database.sqlite"),
 
   synchronize: false,
-  schema: process.env.DATABASE_SCHEMA,
+  logging: false,
 
-  migrations: ["database/migrations/*{.ts,.js}"],
-  seeds: ['database/seeds/*{.ts,.js}'],
+  entities: [path.join(__dirname, "..", "..", "entities", "*.{ts,js}")],
+  migrations: [path.join(__dirname, "..", "..", "..", "database", "migrations", "*.{ts,js}")],
+  migrationsRun: true,
+});
 
-  subscribers: [],
-};
-
-const dataSource = new DataSource(dataSourceOptions);
+console.log("Database Path:", dataSource.options.entities);
 
 // dataSource.initialize();
 

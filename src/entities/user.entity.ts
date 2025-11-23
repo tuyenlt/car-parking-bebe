@@ -11,7 +11,7 @@ export class UserEntity extends BaseEntity{
     @Column({ type: "varchar", length: 255 })
     password: string;
 
-	@Column({ type: "enum", enum: APP_ROLE, default: APP_ROLE.USER })
+	@Column({ type: "simple-enum", enum: APP_ROLE, default: APP_ROLE.USER })
 	role: APP_ROLE;
 
 	@Column({ type: "varchar", length: 500, nullable: true })

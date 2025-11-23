@@ -8,16 +8,16 @@ export class CarHistoryEntity extends BaseEntity{
     @Column({ type: "varchar", length: 255 })
     plate_number: string;
 
-    @Column({ type: "timestamp" })
+    @Column({ type: "datetime" })
     entry_time: Date;
 
-    @Column({ type: "timestamp", nullable: true })
+    @Column({ type: "datetime", nullable: true })
     exit_time: Date;
 
-    @Column({type: "varchar", length: 255, nullable: true})
+    @Column({ type: "varchar", length: 255, nullable: true })
     entry_image: string;
 
-    @Column({type: "varchar", length: 255, nullable: true})
+    @Column({ type: "varchar", length: 255, nullable: true })
     exit_image: string;
 
     @Column({ type: "varchar", length: 255 })

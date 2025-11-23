@@ -1,21 +1,22 @@
 import { Module } from "@nestjs/common";
 import { TypeOrmModule, TypeOrmModuleOptions } from "@nestjs/typeorm";
+import * as path from "path";
 
 export const getTypeOrmModuleOptions = (): TypeOrmModuleOptions => ({
-  type: process.env.DATABASE_ENGINE as any,
-  host: process.env.DATABASE_HOST,
-  port: parseInt(process.env.DATABASE_PORT || "3000"),
-  username: process.env.DATABASE_USER,
-  password: process.env.DATABASE_PASSWORD,
-  database: process.env.DATABASE_NAME,
-  schema: process.env.DATABASE_SCHEMA,
+  type: "better-sqlite3",
 
-  entities: [__dirname + "/../../**/*.entity.{ts,js}"],
-  migrations: [__dirname + "/../../database/migrations/**/*.{ts,js}"],
+  database:
+    process.env.SQLITE_DB ||
+    path.join(__dirname, "..", "..", "..", "..", "database", "data", "database.sqlite"),
 
   synchronize: false,
-  migrationsRun: true, 
+  logging: false,
+
+  entities: [path.join(__dirname, "..", "..", "entities", "**", "*.{ts,js}")],
+  migrations: [path.join(__dirname, "..", "..", "database", "migrations", "**", "*.{ts,js}")],
+  migrationsRun: true,
 });
+
 
 @Module({
   imports: [

@@ -70,7 +70,7 @@ async function bootstrap() {
   app.setGlobalPrefix("api/v1");
 
   // swagger config
-  if (env !== "production") {
+//   if (env !== "production") {
     const config = new DocumentBuilder()
       .addBearerAuth()
       .setVersion("1.0")
@@ -80,7 +80,7 @@ async function bootstrap() {
       deepScanRoutes: true,
     });
     SwaggerModule.setup("api", app, document);
-  }
+//   }
 
   app.enableCors({
     credentials: true,

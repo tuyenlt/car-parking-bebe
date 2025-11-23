@@ -23,7 +23,7 @@
     "migration:generate": "npm run typeorm -- --d src/configs/typeorm/typeorm.config.ts migration:generate ./database/migrations/migrations/$npm_config_name",
     "migration:create": "npm run typeorm -- migration:create ./database/migrations/$npm_config_name",
     "migration:revert": "npm run typeorm -- --d src/configs/typeorm/typeorm.config.ts migration:revert",
-    "seed": "npm run build && ts-node ./node_modules/typeorm-extension/dist/cli/index.js seed -d src/configs/typeorm/typeorm.config.ts",
+    "seed": "ts-node -r tsconfig-paths/register database/seeds/seeds.ts",
     "seed:file": "npm run build && ts-node ./node_modules/typeorm-extension/dist/cli/index.js seed -d src/configs/typeorm/typeorm.config.ts"
   },
   "dependencies": {
@@ -37,13 +37,13 @@
     "@nestjs/websockets": "^11.1.9",
     "aedes": "^0.51.3",
     "bcrypt": "^6.0.0",
+    "better-sqlite3": "^11.10.0",
     "class-transformer": "^0.5.1",
     "class-validator": "^0.14.2",
     "cookie-parser": "^1.4.7",
     "dotenv": "^17.2.3",
     "lodash": "^4.17.21",
     "mqtt": "^5.14.1",
-    "mysql2": "^3.15.3",
     "reflect-metadata": "^0.2.2",
     "rxjs": "^7.8.1",
     "socket.io": "^4.8.1",

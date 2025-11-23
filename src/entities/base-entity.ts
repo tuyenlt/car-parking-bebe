@@ -1,20 +1,29 @@
 import {
-  PrimaryGeneratedColumn,
+  PrimaryColumn,
   CreateDateColumn,
   UpdateDateColumn,
   DeleteDateColumn,
+  BeforeInsert,
 } from "typeorm";
+import { randomUUID } from "crypto";
 
 export class BaseEntity {
-  @PrimaryGeneratedColumn("uuid", { name: "id" })
+  @PrimaryColumn("varchar")
   id: string;
 
-  @CreateDateColumn({ nullable: true })
+  @CreateDateColumn({ type: "datetime", nullable: true })
   created_at?: Date;
 
-  @UpdateDateColumn({ nullable: true })
+  @UpdateDateColumn({ type: "datetime", nullable: true })
   updated_at?: Date;
 
-  @DeleteDateColumn({ nullable: true })
+  @DeleteDateColumn({ type: "datetime", nullable: true })
   deleted_at?: Date;
+
+  @BeforeInsert()
+  generateId() {
+    if (!this.id) {
+      this.id = randomUUID();
+    }
+  }
 }

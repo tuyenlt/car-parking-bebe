@@ -2,7 +2,6 @@ import { Column, Entity } from "typeorm";
 import { BaseEntity } from "./base-entity";
 
 
-
 @Entity("parking-lot")
 export class ParkingLotEntity extends BaseEntity {
     @Column({ type: "varchar", length: 255, unique: true })
