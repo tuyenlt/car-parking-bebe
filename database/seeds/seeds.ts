@@ -68,12 +68,12 @@ async function seed() {
       console.log("⏭️  ParkingLot data already exists, skipping seed...");
     } else {
       const lotData = [
-        { id: randomUUID(), lot_code: "A1", lot_name: "Gate A1", is_available: true },
-        { id: randomUUID(), lot_code: "A2", lot_name: "Gate A2", is_available: true },
-        { id: randomUUID(), lot_code: "A3", lot_name: "Gate A3", is_available: true },
-        { id: randomUUID(), lot_code: "B1", lot_name: "Gate B1", is_available: true },
-        { id: randomUUID(), lot_code: "B2", lot_name: "Gate B2", is_available: true },
-        { id: randomUUID(), lot_code: "B3", lot_name: "Gate B3", is_available: true },
+        { id: randomUUID(), lot_code: "A1", lot_name: "A1", is_available: true },
+        { id: randomUUID(), lot_code: "A2", lot_name: "A2", is_available: true },
+        { id: randomUUID(), lot_code: "A3", lot_name: "A3", is_available: true },
+        { id: randomUUID(), lot_code: "B1", lot_name: "B1", is_available: true },
+        { id: randomUUID(), lot_code: "B2", lot_name: "B2", is_available: true },
+        { id: randomUUID(), lot_code: "B3", lot_name: "B3", is_available: true },
       ];
 
       await lotRepo.save(lotData);

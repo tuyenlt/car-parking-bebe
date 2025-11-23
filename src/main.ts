@@ -10,6 +10,10 @@ import { TrimBodyPipe } from "./common/pipes/trim_body.pipe";
 import { ModifyPagingFilterPipe } from "./common/pipes/modify_paging_filter.pipe";
 import { ResponseFormat, ResponseInterceptor } from "./common/interceptors/response.interceptor";
 import { LoggingInterceptor } from "./common/interceptors/logger.interceptor";
+import * as dotenv from "dotenv";
+
+dotenv.config();
+
 
 async function bootstrap() {
   const env = process.env.NODE_ENV;
@@ -83,7 +87,7 @@ async function bootstrap() {
 //   }
 
   app.enableCors({
-    credentials: true,
+    // credentials: true,
     // origin: ["http://localhost:3000", process.env.FRONTEND_URL],
     // alway enable CORS for all origins
     origin: "*",
