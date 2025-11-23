@@ -1,9 +1,10 @@
-import { BaseEntity, Column, Entity, OneToOne } from "typeorm";
-import { CarHistory } from "./car-histoty.entity";
+import { Column, Entity, OneToOne } from "typeorm";
+import { CarHistoryEntity } from "./car-history.entity";
+import { BaseEntity } from "./base-entity";
 
 
 @Entity("bill")
-export class Bill extends BaseEntity {
+export class BillEntity extends BaseEntity {
     @Column({ type: "varchar", length: 255 , unique: true })
     bill_code: string;
 
@@ -25,6 +26,6 @@ export class Bill extends BaseEntity {
     @Column({ type: "varchar", length: 255 , nullable: true })
     qr_code: string;
 
-    @OneToOne(() => CarHistory, (carHistory) => carHistory.id, { nullable: false })
-    car_history: CarHistory;
+    @OneToOne(() => CarHistoryEntity, (carHistory) => carHistory.id, { nullable: false })
+    car_history: CarHistoryEntity;
 }

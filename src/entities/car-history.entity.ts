@@ -1,10 +1,10 @@
 import { Column, Entity, OneToOne } from "typeorm";
 import { BaseEntity } from "./base-entity";
-import { Bill } from "./bill.entity";
+import { BillEntity } from "./bill.entity";
 
 
 @Entity("car-history")
-export class CarHistory extends BaseEntity{
+export class CarHistoryEntity extends BaseEntity{
     @Column({ type: "varchar", length: 255 })
     plate_number: string;
 
@@ -26,6 +26,6 @@ export class CarHistory extends BaseEntity{
     @Column({ type: "varchar", length: 255, nullable: true })
     exit_location: string;
 
-    @OneToOne(() => Bill, (bill) => bill.car_history, { nullable: true })
-    bill: Bill;
+    @OneToOne(() => BillEntity, (bill) => bill.car_history, { nullable: true })
+    bill: BillEntity;
 }

@@ -22,7 +22,7 @@ services:
     build:
       context: .
       dockerfile: Dockerfile
-    container_name: base-api
+    container_name: car-parking-api
     env_file:
       - .env
     environment:

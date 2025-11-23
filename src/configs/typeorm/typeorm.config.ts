@@ -1,28 +1,29 @@
-import { DataSourceOptions, DataSource } from "typeorm";
+import { DataSource } from "typeorm";
 import * as dotenv from "dotenv";
 
 dotenv.config({ path: ".env" });
 
-export function getConfig() {
-  return {
-    type: process.env.DATABASE_ENGINE,
-    host: process.env.DATABASE_HOST,
-    port: parseInt(process.env.DATABASE_PORT || "3000"),
-    username: process.env.DATABASE_USER,
-    password: process.env.DATABASE_PASSWORD,
-    database: process.env.DATABASE_NAME,
-    entities: [__dirname + "./../../**/*.entity{.ts,.js}"],
-    synchronize: false,
-    schema: process.env.DATABASE_SCHEMA,
-    migrationsRun: true,
-    migrations: ["database/migrations/**/*{.ts,.js}"],
-    subscribers: ["src/migrations"],
-    seeds: ["database/seeds/**/*{.ts,.js}"],
-  } as DataSourceOptions;
-}
+export const dataSourceOptions = {
+  type: process.env.DATABASE_ENGINE as any,
+  host: process.env.DATABASE_HOST,
+  port: parseInt(process.env.DATABASE_PORT || "5432"),
+  username: process.env.DATABASE_USER,
+  password: process.env.DATABASE_PASSWORD,
+  database: process.env.DATABASE_NAME,
 
-const datasource = new DataSource(getConfig());
+  entities: ["src/**/*.entity{.ts,.js}"],
 
-datasource.initialize();
+  synchronize: false,
+  schema: process.env.DATABASE_SCHEMA,
 
-export default datasource;
+  migrations: ["database/migrations/*{.ts,.js}"],
+  seeds: ['database/seeds/*{.ts,.js}'],
+
+  subscribers: [],
+};
+
+const dataSource = new DataSource(dataSourceOptions);
+
+// dataSource.initialize();
+
+export default dataSource;

@@ -4,7 +4,7 @@ import { BaseEntity } from "./base-entity";
 
 
 @Entity("parking-lot")
-export class ParkingLot extends BaseEntity {
+export class ParkingLotEntity extends BaseEntity {
     @Column({ type: "varchar", length: 255, unique: true })
     lot_code: string;
 
