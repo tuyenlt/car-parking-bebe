@@ -26,6 +26,6 @@ export class CarHistoryEntity extends BaseEntity{
     @Column({ type: "varchar", length: 255, nullable: true })
     exit_location: string;
 
-    @OneToOne(() => BillEntity, (bill) => bill.car_history, { nullable: true })
+    @OneToOne(() => BillEntity, (bill) => bill.car_history, { nullable: true, cascade: true })
     bill: BillEntity;
 }

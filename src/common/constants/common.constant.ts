@@ -19,3 +19,8 @@ export enum APP_ROLE {
   ADMIN = "admin",
   USER = "user",
 }
+
+export enum CAMERA_TYPE {
+  ENTRY = "entry_gate",
+  EXIT = "exit_gate",
+}

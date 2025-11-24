@@ -1,4 +1,4 @@
-import { Column, Entity, OneToOne } from "typeorm";
+import { Column, Entity, JoinColumn, OneToOne } from "typeorm";
 import { CarHistoryEntity } from "./car-history.entity";
 import { BaseEntity } from "./base-entity";
 
@@ -17,6 +17,15 @@ export class BillEntity extends BaseEntity {
     @Column({ type: "varchar", length: 255 })
     payment_method: string;
 
+	@Column({ type: "varchar", length: 255 , nullable: true })
+    vnp_url: string;
+
+	@Column({ type: "varchar", length: 255, nullable: true })
+	transaction_no: string;
+
+	@Column({ type: "varchar", length: 255, nullable: true })
+	bank_code: string;
+
     @Column({ type: "varchar", length: 255, nullable: true })
     description: string;
 
@@ -26,6 +35,7 @@ export class BillEntity extends BaseEntity {
     @Column({ type: "varchar", length: 255 , nullable: true })
     qr_code: string;
 
-    @OneToOne(() => CarHistoryEntity, (carHistory) => carHistory.id, { nullable: false })
+    @OneToOne(() => CarHistoryEntity, (carHistory) => carHistory.bill, { nullable: false })
+	@JoinColumn({ name: "car_history_id" })
     car_history: CarHistoryEntity;
 }

@@ -34,7 +34,7 @@ export abstract class BaseCrudRepository<E extends BaseEntity>
     return await this.repository.save(data, { ...options });
   }
 
-  async update(id: number, data, queryRunner?: QueryRunner) {
+  async update(id: string | number, data, queryRunner?: QueryRunner) {
     if (queryRunner) {
       return await queryRunner.manager
         .getRepository(this.alias)
@@ -192,7 +192,7 @@ export abstract class BaseCrudRepository<E extends BaseEntity>
     };
   }
 
-  async delete(id: number, queryRunner?: QueryRunner) {
+  async delete(id: number | string, queryRunner?: QueryRunner) {
     if (queryRunner) {
       return await queryRunner.manager
         .getRepository(this.repository.target)

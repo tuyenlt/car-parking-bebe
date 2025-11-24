@@ -5,3 +5,8 @@ export enum MqttTopics {
   VEHICLE_EXIT = 'vehicle/exit',
   PARKING_STATUS = 'parking/status',
 }
+
+export enum MQTT_CONTROL_COMMAND {
+  OPEN_GATE = 'OPEN_GATE',
+  CLOSE_GATE = 'CLOSE_GATE',
+}

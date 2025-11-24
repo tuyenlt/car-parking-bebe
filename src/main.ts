@@ -27,8 +27,8 @@ async function bootstrap() {
 
   // pipes
   app.useGlobalPipes(
-    new TrimBodyPipe(),
-    new ModifyPagingFilterPipe(),
+    // new TrimBodyPipe(),
+    // new ModifyPagingFilterPipe(),
     new ValidationPipe({
       exceptionFactory: (errors) => {
         const extractErrors = (errors: any[], prefix = ""): any[] => {

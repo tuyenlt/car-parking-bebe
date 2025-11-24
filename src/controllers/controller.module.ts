@@ -7,6 +7,8 @@ import { ParkingLotService } from "./parking-lot/parking-lot.service";
 import { ParkingLotController } from "./parking-lot/parking-lot.controller";
 import { CarHistoryController } from "./car-history/car-history.controller";
 import { CarHistoryService } from "./car-history/car-history.service";
+import { BillController } from "./bill/bill.controller";
+import { BillService } from "./bill/bill.service";
 
 
 @Module({  
@@ -14,12 +16,14 @@ import { CarHistoryService } from "./car-history/car-history.service";
   controllers: [
 	UserController, 
 	ParkingLotController,
-	CarHistoryController
+	CarHistoryController,
+	BillController
   ],
   providers: [
 	UserService, 
 	ParkingLotService, 
-	CarHistoryService
+	CarHistoryService,
+	BillService
   ],
 })
 export class ControllerModule {}
