@@ -11,6 +11,4 @@ export class ParkingLotController {
 	async getLots() {
 		return this.parkingLotService.getLots();
 	}
-
-
 }

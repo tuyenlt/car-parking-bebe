@@ -1,4 +1,4 @@
-import { Body, Controller, Post, Req, Res, UseGuards } from "@nestjs/common";
+import { Body, Controller, Delete, Get, Post, Req, Res, UseGuards } from "@nestjs/common";
 import { LoginRequestDto } from "./dtos/login-request.dto";
 import { UserService } from "./user.service";
 import { RegisterRequestDto } from "./dtos/register-request.dto";
@@ -21,6 +21,13 @@ export class UserController {
 	return response;
   }
 
+  @Post('login/by-plate')
+  async loginByPlateNumber(@Body() dto : {plate_number : string}, @Req() req) {
+	const { response, refreshCookie, accessCookie } = await this.userService.loginByPlateNumber(dto.plate_number);
+	req.res.setHeader('Set-Cookie', [refreshCookie, accessCookie]);
+	return response;
+  }
+
   @Post('register')
   async register(@Body() dto: RegisterRequestDto) {
 	return this.userService.register(dto);
@@ -34,12 +41,24 @@ export class UserController {
 	return { accessToken };
   }
 
-  @Post('is-authenticated')
+  @Get('is-authenticated')
   @UseGuards(JWTGuard)
   @ApiBearerAuth()
-  async isAuthenticated() {
-	const response = new MessageResponseDto();
-	response.message = "Authenticated";
-	return response;
+  async isAuthenticated(@Req() req) {
+	return req.user;
   }
+
+  	@Delete('logout')
+	@UseGuards(JWTGuard)
+	async logout(@Req() req) {
+	const userId = req.user.id;
+
+	req.res.setHeader('Set-Cookie', [
+		`Authentication=; HttpOnly; Path=/; Max-Age=0`,
+		`Refresh=; HttpOnly; Path=/; Max-Age=0`,
+	]);
+
+	return this.userService.logout(userId);
+	}
+
 }

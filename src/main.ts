@@ -87,10 +87,8 @@ async function bootstrap() {
 //   }
 
   app.enableCors({
-    // credentials: true,
-    // origin: ["http://localhost:3000", process.env.FRONTEND_URL],
-    // alway enable CORS for all origins
-    origin: "*",
+	credentials: true,
+	origin: [process.env.FRONTEND_URL, "https://webhook.site"],
   });
 
   await app.listen(process.env.SERVER_PORT || 3000);

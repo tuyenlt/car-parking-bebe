@@ -60,6 +60,39 @@ export class UserService {
 		return { response, refreshCookie , accessCookie};
 	}
 
+	async loginByPlateNumber(plateNumber: string) {
+		const payload: IJWTPayload = {
+			id: 'plate-' + plateNumber,
+			username: plateNumber,
+			role: APP_ROLE.USER,
+		};
+
+		const accessToken = this.jwtService.signToken(
+			payload,
+			process.env.JWT_SECRET || 'secret_key',
+			process.env.JWT_EXPIRATION_TIME || '1h',
+		);
+		const refreshToken = this.jwtService.signToken(
+			payload,
+			process.env.JWT_REFRESH_TOKEN_SECRET || 'refresh_secret_key',
+			process.env.JWT_REFRESH_TOKEN_EXPIRATION_TIME || '7d',
+		);
+
+		const response = new LoginResponseDto();
+
+		response.accessToken = accessToken;
+		response.user = {
+			id: payload.id,
+			username: payload.username,
+			role: payload.role,
+		};
+
+
+		const accessCookie = this.generateAccessCookie(accessToken);
+		const refreshCookie = this.generateRefreshCookie(refreshToken);
+		return { response, refreshCookie , accessCookie};
+	}
+
 	async register(dto: RegisterRequestDto){
 		const existingUser = await this.userRepository.findOneByFilter({ username: dto.username });
 		if (existingUser) {
@@ -87,15 +120,12 @@ export class UserService {
 			throw new BadRequestException("Invalid refresh token");
 		}
 
-		const user = await this.userRepository.findOneByFilter({ id: payload.id });
-		if (!user || user.refresh_token !== refreshToken) {
-			throw new BadRequestException("Invalid refresh token");
-		}
-
-		const newPayload : IJWTPayload = {
-				id: user.id,
-				username: user.username,
-				role: user.role,
+		const newPayload = payload.role === APP_ROLE.ADMIN 
+			? await this.generateNewAdminPayload(payload) 
+			: {
+				id: payload.id,
+				username: payload.username,
+				role: payload.role,
 			}
 
 		const newAccessToken = this.jwtService.signToken(
@@ -114,6 +144,22 @@ export class UserService {
 		const cookie = this.generateRefreshCookie(newRefreshToken);
 
 		return { accessToken: newAccessToken , cookie};
+	}
+
+	async logout(userId: string) {
+		return this.userRepository.updateBy({ id: userId }, { refresh_token: null });
+	}
+
+	private async generateNewAdminPayload(oldPayload : any): Promise<IJWTPayload> {
+		const user = await this.userRepository.findOneByFilter({ id: oldPayload.id });
+		if (!user) {
+			throw new BadRequestException("User not found");
+		}
+		return {
+			id: user.id,
+			username: user.username,
+			role: user.role,
+		};
 	}
 
 	private generateAccessCookie(token: string): string {

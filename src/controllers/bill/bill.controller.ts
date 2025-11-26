@@ -1,8 +1,10 @@
-import { Controller, Get, Post, Query } from "@nestjs/common";
+import { Controller, Get, Post, Query, UseGuards } from "@nestjs/common";
 import { BillService } from "./bill.service";
+import { JWTGuard } from "src/common/guards/jwt.guard";
 
 
 @Controller("bill")
+@UseGuards(JWTGuard)
 export class BillController {
 	constructor(
 		private readonly billService: BillService,
@@ -14,7 +16,7 @@ export class BillController {
 		return { vnpayUrl };
 	}
 
-	@Get("/vnpay-return") 
+	@Get("/vnpay-return")
 	async handleVNPAYReturn(@Query() queryParams: any) {
 		const result = await this.billService.handleReturnVNPAY(queryParams);
 		return result;
