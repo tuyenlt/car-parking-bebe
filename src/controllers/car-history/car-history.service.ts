@@ -1,6 +1,6 @@
 import { Injectable } from "@nestjs/common";
 import { randomUUID } from "crypto";
-import { CAMERA_TYPE } from "src/common/constants/common.constant";
+import { BillType, CAMERA_TYPE } from "src/common/constants/common.constant";
 import { BillEntity } from "src/entities/bill.entity";
 import { CarHistoryEntity } from "src/entities/car-history.entity";
 import { CarHistoryRepository } from "src/repositories/car-history.repository";
@@ -10,6 +10,7 @@ import { MqttBrokerService } from "src/mqtt/mqtt.service";
 import { MQTT_CONTROL_COMMAND, MqttTopics } from "src/common/constants/mqtt.constant";
 import { LoggerService } from "src/common/logger/logger.service";
 import e from "express";
+import { UserService } from "../user/user.service";
 
 
 @Injectable()
@@ -19,6 +20,7 @@ export class CarHistoryService {
 		private readonly billService: BillService,
 		private readonly mqttService: MqttBrokerService,
 		private readonly logger : LoggerService,
+		private readonly userService: UserService,
 	) {}
 
 	async findById(id: string) {
@@ -100,17 +102,27 @@ export class CarHistoryService {
 	private async createBillForCarHistory(carHistory: CarHistoryEntity) {
 		const amount = await this.calculateParkingFee(carHistory);
 		const code = randomUUID();
-		const url = await this.billService.createVNPAYBill(amount, code);
 		const bill = new BillEntity();
+		const billType = await this.getBillTypeForUser(carHistory.plate_number);
+		const url = billType === BillType.MONTHLY ? '' : await this.billService.createVNPAYBill(amount, code , billType);
+		bill.bill_type = billType;
 		bill.vnp_url = url;
 		bill.bill_code = code;
 		bill.bill_time = new Date();
-		bill.amount = amount;
-		bill.payment_method = "UNPAID";
+		bill.amount = billType === BillType.MONTHLY ? 0 : amount;
+		bill.payment_method = "VNPAY";
 		bill.description = `Parking fee for ${carHistory.plate_number}`;
-		bill.is_paid = false;
+		bill.is_paid = billType === BillType.MONTHLY ? true : false;
 		bill.car_history = carHistory;
 		return bill;
+	}
+
+	private async getBillTypeForUser(plateNumber: string): Promise<BillType> {
+		const user = await this.userService.getUserByPlateNumber(plateNumber);
+		if(user && user.is_membership_paid && user.start_date <= new Date() && user.end_date >= new Date()){
+			return BillType.MONTHLY;
+		}
+		return BillType.TEMPORARY;
 	}
 
 	private async calculateParkingFee(carHistory: CarHistoryEntity): Promise<number> {

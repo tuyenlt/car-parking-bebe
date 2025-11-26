@@ -1,6 +1,8 @@
 import { Injectable, OnModuleInit } from '@nestjs/common';
 import Aedes, { PublishPacket } from 'aedes';
-import { createServer } from 'net';
+import { createServer as createTcpServer } from 'net';
+import { createServer as createHttpServer } from 'http';
+import WebSocket, { WebSocketServer, createWebSocketStream } from 'ws';
 import { MqttTopics } from 'src/common/constants/mqtt.constant';
 import { LoggerService } from 'src/common/logger/logger.service';
 import { MqttParkingStatusPayload } from 'src/common/types/mqtt.type';
@@ -19,11 +21,24 @@ export class MqttBrokerService implements OnModuleInit {
   private broker = new Aedes();
 
   onModuleInit() {
-    const server = createServer(this.broker.handle);
-    const PORT = process.env.MQTT_PORT || 1883;
+    const TCP_PORT = Number(process.env.MQTT_PORT || 1883);
+    const tcpServer = createTcpServer(this.broker.handle);
+    tcpServer.listen(TCP_PORT, '0.0.0.0', () => {
+      this.logger.log("MQTT",`MQTT TCP broker running on 0.0.0.0:${TCP_PORT}`);
+    });
 
-    server.listen(PORT, () => {
-      this.logger.log("MQTT",`MQTT broker running on port ${PORT}`);
+    // WebSocket server for browser/web clients (mqtt over websocket)
+    const WS_PORT = Number(process.env.MQTT_WS_PORT || 8083);
+    const httpServer = createHttpServer();
+    const wss = new WebSocketServer({ server: httpServer, path: '/mqtt' });
+
+    httpServer.listen(WS_PORT, '0.0.0.0', () => {
+      this.logger.log("MQTT",`MQTT WebSocket broker running on 0.0.0.0:${WS_PORT} (path /mqtt)`);
+    });
+
+    wss.on('connection', (ws) => {
+      const stream = createWebSocketStream(ws as any);
+      this.broker.handle(stream);
     });
 
     this.broker.on('client', client => {

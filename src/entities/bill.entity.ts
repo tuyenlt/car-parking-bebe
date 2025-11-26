@@ -1,6 +1,8 @@
-import { Column, Entity, JoinColumn, OneToOne } from "typeorm";
+import { Column, Entity, JoinColumn, ManyToOne, OneToOne } from "typeorm";
 import { CarHistoryEntity } from "./car-history.entity";
 import { BaseEntity } from "./base-entity";
+import { BillType } from "../common/constants/common.constant";
+import { UserEntity } from "./user.entity";
 
 
 @Entity("bill")
@@ -32,10 +34,14 @@ export class BillEntity extends BaseEntity {
     @Column({ type: "boolean", default: false })
     is_paid: boolean;
 
-    @Column({ type: "varchar", length: 255 , nullable: true })
-    qr_code: string;
+	@Column({ type: "simple-enum", enum: BillType, default: BillType.TEMPORARY })
+	bill_type: BillType;
 
-    @OneToOne(() => CarHistoryEntity, (carHistory) => carHistory.bill, { nullable: false })
+    @OneToOne(() => CarHistoryEntity, (carHistory) => carHistory.bill, { nullable: true })
 	@JoinColumn({ name: "car_history_id" })
     car_history: CarHistoryEntity;
+
+	@ManyToOne(() => UserEntity , { nullable: true })
+	@JoinColumn({ name: "user_id" })
+	user_id: string;
 }

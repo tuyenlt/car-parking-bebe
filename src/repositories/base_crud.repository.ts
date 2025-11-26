@@ -25,6 +25,10 @@ export abstract class BaseCrudRepository<E extends BaseEntity>
     private readonly alias: string,
   ) {}
 
+  createQueryBuilder(alias?: string) {
+	return this.repository.createQueryBuilder(alias || this.alias);
+  }
+
   async create(data, queryRunner?: QueryRunner, options: SaveOptions = {}) {
     if (queryRunner) {
       return await queryRunner.manager

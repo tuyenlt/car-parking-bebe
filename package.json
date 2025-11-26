@@ -52,7 +52,8 @@
     "socket.io": "^4.8.1",
     "typeorm": "^0.3.27",
     "typeorm-extension": "^2.8.1",
-    "vnpay": "^2.4.4"
+    "vnpay": "^2.4.4",
+    "websocket-stream": "^5.5.2"
   },
   "devDependencies": {
     "@eslint/eslintrc": "^3.2.0",

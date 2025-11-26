@@ -1,6 +1,7 @@
 import { Controller, Get, Post, Query, UseGuards } from "@nestjs/common";
 import { BillService } from "./bill.service";
 import { JWTGuard } from "src/common/guards/jwt.guard";
+import { BillType } from "src/common/constants/common.constant";
 
 
 @Controller("bill")
@@ -12,7 +13,7 @@ export class BillController {
 
 	@Get("/test/vnpay")
 	async testVNPAY() {
-		const vnpayUrl = await this.billService.createVNPAYBill(500000, 'TEST123456d');
+		const vnpayUrl = await this.billService.createVNPAYBill(500000, 'TEST123456d', BillType.TEMPORARY);
 		return { vnpayUrl };
 	}
 

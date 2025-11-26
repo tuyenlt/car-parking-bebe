@@ -5,6 +5,7 @@ import { RegisterRequestDto } from "./dtos/register-request.dto";
 import { JWTGuard } from "src/common/guards/jwt.guard";
 import { MessageResponseDto } from "src/common/dtos/message_reponse.dto";
 import { ApiBearerAuth, ApiTags } from "@nestjs/swagger";
+import { MemberShipRegisterType } from "src/common/constants/common.constant";
 
 
 @Controller('users')
@@ -41,6 +42,18 @@ export class UserController {
 	return { accessToken };
   }
 
+  @Post('register-membership')
+  @UseGuards(JWTGuard)
+  async registerMembership(@Body() dto: { membership_type: MemberShipRegisterType }, @Req() req) {
+	return this.userService.createMembership(req.user.plate_number, dto.membership_type);
+  }
+
+  @Get('get-membership-info')
+  @UseGuards(JWTGuard)
+  async getMembershipInfo(@Req() req) {
+	return this.userService.getMembershipInfo(req.user.plate_number);
+  }
+
   @Get('is-authenticated')
   @UseGuards(JWTGuard)
   @ApiBearerAuth()
@@ -48,14 +61,14 @@ export class UserController {
 	return req.user;
   }
 
-  	@Delete('logout')
+	@Delete('logout')
 	@UseGuards(JWTGuard)
 	async logout(@Req() req) {
 	const userId = req.user.id;
 
 	req.res.setHeader('Set-Cookie', [
-		`Authentication=; HttpOnly; Path=/; Max-Age=0`,
-		`Refresh=; HttpOnly; Path=/; Max-Age=0`,
+	`Authentication=; HttpOnly; Path=/; Max-Age=0`,
+	`Refresh=; HttpOnly; Path=/; Max-Age=0`,
 	]);
 
 	return this.userService.logout(userId);
