@@ -3,13 +3,15 @@ import { DataSource } from "typeorm";
 import * as bcrypt from "bcrypt";
 import { APP_ROLE } from "../../src/common/constants/common.constant";
 import * as path from "path";
-import { ParkingLotEntity } from "../../src/entities/parking-lot.entity";
 import { randomUUID } from "crypto";
+import { BillEntity } from "../../src/entities/bill.entity";
+import { ParkingLotEntity } from "../../src/entities/parking-lot.entity";
+import { CarHistoryEntity } from "../../src/entities/car-history.entity";
 
 const AppDataSource = new DataSource({
   type: "better-sqlite3",
   database: path.join(__dirname, "..", "data", "database.sqlite"),
-  entities: [UserEntity, ParkingLotEntity],
+  entities: [UserEntity, ParkingLotEntity, BillEntity, CarHistoryEntity],
   synchronize: false, 
   logging: false,
 });

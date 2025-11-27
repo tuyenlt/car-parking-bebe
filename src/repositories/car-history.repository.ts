@@ -18,7 +18,6 @@ export class CarHistoryRepository extends BaseCrudRepository<CarHistoryEntity> {
 	async getLastestEntryByPlateNumber(plateNumber: string): Promise<CarHistoryEntity | null> {
 		return this.carHistoryRepository.findOne({
 			where: {  
-				plate_number: plateNumber, 
 				exit_time: IsNull(),
 			},
 			order: { created_at: "DESC" },
@@ -28,7 +27,6 @@ export class CarHistoryRepository extends BaseCrudRepository<CarHistoryEntity> {
 	async getLastestExitByPlateNumber(plateNumber: string): Promise<CarHistoryEntity | null> {
 		return this.carHistoryRepository.findOne({
 			where: { 
-				plate_number: plateNumber, 
 				exit_time: Not(IsNull()),
 			},
 			order: { created_at: "DESC" },

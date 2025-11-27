@@ -85,10 +85,24 @@ export class CarHistoryService {
 
 				const lastestExit = await this.carHistoryRepository.getLastestExitByPlateNumber(carHistoryData.plate_number);
 				console.log('Lastest Exit:', lastestExit);
-				if(!lastestExit || lastestExit?.plate_number !== carHistoryData.plate_number){
+				const time_out_diff_minutes = lastestExit ? (carHistoryData.exit_time.getTime() - lastestExit.exit_time.getTime()) / (1000 * 60) : 0;
+				if(!lastestExit){
 					const bill = await this.createBillForCarHistory(existingRecord);
 						existingRecord.bill = bill;
+						if(bill.bill_type === BillType.MONTHLY){
+							this.mqttService.publish(MqttTopics.EXIT_GATE_CONTROL, MQTT_CONTROL_COMMAND.OPEN_GATE);
+						}
 						await this.carHistoryRepository.create(existingRecord);
+				}
+				else{
+					if(lastestExit.plate_number !== carHistoryData.plate_number || time_out_diff_minutes > 10){
+						const bill = await this.createBillForCarHistory(existingRecord);
+						existingRecord.bill = bill;
+						if(bill.bill_type === BillType.MONTHLY){
+							this.mqttService.publish(MqttTopics.EXIT_GATE_CONTROL, MQTT_CONTROL_COMMAND.OPEN_GATE);
+						}
+						await this.carHistoryRepository.create(existingRecord);
+					}
 				}
 				if(lastestExit && lastestExit?.plate_number === carHistoryData.plate_number){
 					this.logger.warn('GATE','Exit record already exists for this plate number');
@@ -119,7 +133,7 @@ export class CarHistoryService {
 
 	private async getBillTypeForUser(plateNumber: string): Promise<BillType> {
 		const user = await this.userService.getUserByPlateNumber(plateNumber);
-		if(user && user.is_membership_paid && user.start_date <= new Date() && user.end_date >= new Date()){
+		if(user && user.start_date <= new Date() && user.end_date >= new Date()){
 			return BillType.MONTHLY;
 		}
 		return BillType.TEMPORARY;
